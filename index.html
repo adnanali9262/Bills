@@ -5,34 +5,35 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Exchange Directory — BWN</title>
 <meta name="description" content="Reference directory of MSAG and T-E exchange sites, Bahawalnagar district.">
-<meta name="theme-color" content="#0E2A43">
+<meta name="theme-color" content="#F6F8FB">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Exchange Dir">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg: #0E2A43;
-    --bg-deep: #0A2036;
-    --panel: #12324D;
-    --panel-2: #163A59;
-    --line: #234C6C;
-    --line-soft: #1B3E5C;
-    --ink: #EAF2F8;
-    --ink-dim: #9FB6C9;
-    --ink-faint: #6E869B;
-    --amber: #FFB454;
-    --amber-ink: #2A1B04;
-    --cyan: #6FD1E0;
-    --closed: #E07A6B;
-    --closed-bg: rgba(224,122,107,0.14);
-    --active: #6FCB9F;
-    --active-bg: rgba(111,203,159,0.12);
+    color-scheme: light;
+    --bg: #F6F8FB;
+    --bg-deep: #FFFFFF;
+    --panel: #FFFFFF;
+    --panel-2: #F0F4F8;
+    --line: #C9D5E1;
+    --line-soft: #DDE5ED;
+    --ink: #18324A;
+    --ink-dim: #4F6578;
+    --ink-faint: #708497;
+    --amber: #C87816;
+    --amber-ink: #FFFFFF;
+    --cyan: #167B92;
+    --closed: #B8463B;
+    --closed-bg: rgba(184,70,59,0.12);
+    --active: #287A57;
+    --active-bg: rgba(40,122,87,0.12);
     --radius: 10px;
     --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
     --font-body: 'Inter', system-ui, -apple-system, sans-serif;
@@ -44,8 +45,8 @@
   body{
     margin:0;
     background:
-      linear-gradient(180deg, rgba(255,255,255,0.025) 1px, transparent 1px) 0 0/100% 28px,
-      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px) 0 0/28px 100%,
+      linear-gradient(180deg, rgba(24,50,74,0.025) 1px, transparent 1px) 0 0/100% 28px,
+      linear-gradient(90deg, rgba(24,50,74,0.02) 1px, transparent 1px) 0 0/28px 100%,
       var(--bg);
     color: var(--ink);
     font-family: var(--font-body);
@@ -66,7 +67,7 @@
     position: sticky;
     top: 0;
     z-index: 20;
-    background: linear-gradient(180deg, var(--bg-deep) 82%, rgba(14,42,67,0.85));
+    background: linear-gradient(180deg, var(--bg-deep) 82%, rgba(246,248,251,0.85));
     border-bottom: 1px solid var(--line-soft);
     padding-top: max(18px, env(safe-area-inset-top));
     padding-bottom: 14px;
@@ -141,7 +142,7 @@
   }
   input[type="search"]::placeholder{ color: var(--ink-faint); }
   input[type="search"]:focus{ border-color: var(--cyan); }
-  input[type="search"]::-webkit-search-cancel-button{ filter: invert(1) opacity(0.5); }
+  input[type="search"]::-webkit-search-cancel-button{ opacity:0.5; }
 
   .filters{
     display:flex;
@@ -195,9 +196,9 @@
     margin-bottom: 8px;
     padding: 12px 12px 12px 14px;
     display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 4px 10px;
-    align-items: start;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: center;
     position: relative;
   }
 
@@ -210,25 +211,28 @@
   .row-type.msag{ background: var(--cyan); }
   .row-type.te{ background: var(--amber); }
 
-  .ref-line{
-    display:flex;
+  .info-line{
+    display:grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.8fr) minmax(0, 0.7fr) minmax(0, 0.9fr) auto;
     align-items:center;
     gap: 8px;
-    grid-column: 1;
+    min-width:0;
+    white-space:nowrap;
+  }
+  .ref-num, .exch-name, .type-tag, .date-tag, .status-tag{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
   }
   .ref-num{
     font-family: var(--font-mono);
-    font-size: 14.5px;
+    font-size: 12.5px;
     font-weight: 500;
     color: var(--ink);
     letter-spacing: 0.01em;
-    word-break: break-all;
   }
 
   .copy-btn{
-    grid-column: 2;
-    grid-row: 1 / span 2;
-    align-self: center;
     background: var(--panel-2);
     border: 1px solid var(--line);
     color: var(--ink-dim);
@@ -248,18 +252,8 @@
   }
 
   .exch-name{
-    grid-column: 1;
-    font-size: 14px;
+    font-size: 12.5px;
     color: var(--ink-dim);
-    line-height: 1.4;
-  }
-
-  .meta-line{
-    grid-column: 1;
-    display:flex;
-    align-items:center;
-    gap: 8px;
-    margin-top: 2px;
   }
 
   .type-tag{
@@ -267,15 +261,15 @@
     font-size: 10.5px;
     font-weight: 600;
     letter-spacing: 0.02em;
-    padding: 2px 6px;
+    padding: 2px 4px;
     border-radius: 4px;
   }
-  .type-tag.msag{ color: var(--cyan); background: rgba(111,209,224,0.12); }
-  .type-tag.te{ color: var(--amber); background: rgba(255,180,84,0.12); }
+  .type-tag.msag{ color: var(--cyan); background: rgba(22,123,146,0.12); }
+  .type-tag.te{ color: var(--amber); background: rgba(200,120,22,0.12); }
 
   .date-tag{
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: 10.5px;
     color: var(--ink-faint);
   }
 
@@ -529,14 +523,12 @@ function render(){
   rowsList.innerHTML = filtered.map((item, i) => `
     <li class="row" data-ref="${item.ref}">
       <span class="row-type ${item.type}"></span>
-      <div class="ref-line">
-        <span class="ref-num">${item.ref}</span>
-      </div>
-      <div class="exch-name">${item.name}</div>
-      <div class="meta-line">
-        <span class="type-tag ${item.type}">${item.type === 'msag' ? 'MSAG' : 'T-E'}</span>
-        <span class="date-tag">Issue day ${item.day}</span>
-        ${item.closed ? '<span class="status-tag">Closed</span>' : ''}
+      <div class="info-line">
+      <span class="ref-num">${item.ref}</span>
+      <span class="exch-name">${item.name}</span>
+      <span class="type-tag ${item.type}">${item.type === 'msag' ? 'MSAG' : 'T-E'}</span>
+      <span class="date-tag">Issue day ${item.day}</span>
+      ${item.closed ? '<span class="status-tag">Closed</span>' : ''}
       </div>
       <button class="copy-btn" aria-label="Copy reference number" data-ref="${item.ref}">${copyIcon}</button>
     </li>
