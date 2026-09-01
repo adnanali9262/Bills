@@ -34,6 +34,9 @@
     --closed-bg: rgba(220,38,38,0.12);
     --active: #10B981;
     --active-bg: rgba(16,185,129,0.12);
+    --green: #059669;
+    --green-bg: rgba(5,150,105,0.1);
+    --green-border: rgba(5,150,105,0.3);
     --radius: 10px;
     --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
     --font-body: 'Inter', system-ui, -apple-system, sans-serif;
@@ -176,6 +179,32 @@
   .chip .n{ opacity: 0.65; margin-left: 3px; }
   .chip.active .n{ opacity: 0.55; }
 
+  .action-row{
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .share-btn{
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    padding: 6px 12px;
+    border-radius: 100px;
+    border: 1px solid var(--line);
+    background: var(--green-bg);
+    color: var(--green);
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all .15s ease;
+    font-weight: 600;
+  }
+  .share-btn:active{ transform: scale(0.97); }
+  .share-btn:disabled{
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
   main{ margin-top: 14px; }
 
   .group-label{
@@ -200,6 +229,12 @@
     gap: 4px 10px;
     align-items: center;
     position: relative;
+    transition: all .15s ease;
+  }
+
+  li.row.green{
+    background: var(--green-bg);
+    border-color: var(--green-border);
   }
 
   .row-type{
@@ -210,6 +245,7 @@
   }
   .row-type.msag{ background: var(--cyan); }
   .row-type.te{ background: var(--amber); }
+  li.row.green .row-type{ background: var(--green); }
 
   .info-line{
     grid-column: 1;
@@ -232,6 +268,11 @@
     font-weight: 500;
     color: var(--ink);
     letter-spacing: 0.01em;
+  }
+
+  li.row.green .ref-num{
+    color: var(--green);
+    font-weight: 600;
   }
 
   .copy-btn{
@@ -261,6 +302,11 @@
     color: var(--ink-dim);
   }
 
+  li.row.green .exch-name{
+    color: var(--green);
+    font-weight: 500;
+  }
+
   .type-tag{
     font-family: var(--font-mono);
     font-size: 10.5px;
@@ -272,10 +318,21 @@
   .type-tag.msag{ color: var(--cyan); background: rgba(22,123,146,0.12); }
   .type-tag.te{ color: var(--amber); background: rgba(200,120,22,0.12); }
 
+  li.row.green .type-tag{
+    color: var(--green);
+    background: transparent;
+    font-weight: 700;
+  }
+
   .date-tag{
     font-family: var(--font-mono);
     font-size: 11px;
     color: var(--ink-faint);
+  }
+
+  li.row.green .date-tag{
+    color: var(--green);
+    font-weight: 600;
   }
 
   .status-tag{
@@ -375,6 +432,12 @@
       <button class="chip" data-filter="te">T-E <span class="n"></span></button>
       <button class="chip" data-filter="closed">Closed <span class="n"></span></button>
     </div>
+
+    <div class="action-row">
+      <button class="share-btn" id="shareBtn" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;display:inline;margin-right:6px;vertical-align:middle;"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Share Green Sites (<span id="greenCount">0</span>)
+      </button>
+    </div>
   </div>
 </header>
 
@@ -470,7 +533,7 @@ const DATA = [
 ].map(([ref, name, day, status]) => ({
   ref,
   name,
-  day,
+  day: parseInt(day),
   type: name.startsWith("MSAG") ? "msag" : "te",
   closed: status === "closed"
 }));
@@ -481,12 +544,20 @@ const emptyQuery = document.getElementById('emptyQuery');
 const searchInput = document.getElementById('searchInput');
 const countPill = document.getElementById('countPill');
 const filters = document.getElementById('filters');
+const shareBtn = document.getElementById('shareBtn');
+const greenCount = document.getElementById('greenCount');
 
 let activeFilter = 'all';
 let query = '';
 
 const copyIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
 const checkIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`;
+
+function isGreen(item){
+  if(item.closed) return false;
+  const today = new Date();
+  return today.getDate() >= item.day;
+}
 
 function updateCounts(){
   const counts = { all: DATA.length, msag: 0, te: 0, closed: 0 };
@@ -498,6 +569,13 @@ function updateCounts(){
     const key = chip.dataset.filter;
     chip.querySelector('.n').textContent = counts[key];
   });
+  updateGreenCount();
+}
+
+function updateGreenCount(){
+  const green = DATA.filter(isGreen);
+  greenCount.textContent = green.length;
+  shareBtn.disabled = green.length === 0;
 }
 
 function matches(item, q){
@@ -525,8 +603,10 @@ function render(){
   rowsList.style.display = 'block';
   emptyState.style.display = 'none';
 
-  rowsList.innerHTML = filtered.map((item, i) => `
-    <li class="row" data-ref="${item.ref}">
+  rowsList.innerHTML = filtered.map((item, i) => {
+    const green = isGreen(item);
+    return `
+    <li class="row ${green ? 'green' : ''}" data-ref="${item.ref}">
       <span class="row-type ${item.type}"></span>
       <div class="info-line">
         <span class="ref-num">${item.ref}</span>
@@ -536,7 +616,8 @@ function render(){
       </div>
       <button class="copy-btn" aria-label="Copy reference number" data-ref="${item.ref}">${copyIcon}</button>
     </li>
-  `).join('');
+  `;
+  }).join('');
 }
 
 rowsList.addEventListener('click', async (e) => {
@@ -576,6 +657,36 @@ filters.addEventListener('click', (e) => {
 searchInput.addEventListener('input', (e) => {
   query = e.target.value;
   render();
+});
+
+shareBtn.addEventListener('click', async () => {
+  const green = DATA.filter(isGreen);
+  if(green.length === 0) return;
+
+  const message = 'Green Sites Today:\n\n' + green.map(item => 
+    `${item.name}\nRef: ${item.ref}\nType: ${item.type === 'msag' ? 'MSAG' : 'T-E'}`
+  ).join('\n\n');
+
+  if(navigator.share){
+    try{
+      await navigator.share({
+        title: 'Green Sites - Exchange Directory',
+        text: message
+      });
+    }catch(err){
+      if(err.name !== 'AbortError') console.error(err);
+    }
+  }else{
+    try{
+      await navigator.clipboard.writeText(message);
+      shareBtn.textContent = '✓ Copied!';
+      setTimeout(() => {
+        shareBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;display:inline;margin-right:6px;vertical-align:middle;"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Share Green Sites (<span id="greenCount">' + green.length + '</span>)';
+      }, 1500);
+    }catch(err){
+      console.error('Failed to copy:', err);
+    }
+  }
 });
 
 updateCounts();
