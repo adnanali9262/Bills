@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Exchange Directory — BWN</title>
+<meta name="description" content="Reference directory of MSAG and T-E exchange sites, Bahawalnagar district.">
+<meta name="theme-color" content="#0E2A43">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Exchange Dir">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0E2A43;
+    --bg-deep: #0A2036;
+    --panel: #12324D;
+    --panel-2: #163A59;
+    --line: #234C6C;
+    --line-soft: #1B3E5C;
+    --ink: #EAF2F8;
+    --ink-dim: #9FB6C9;
+    --ink-faint: #6E869B;
+    --amber: #FFB454;
+    --amber-ink: #2A1B04;
+    --cyan: #6FD1E0;
+    --closed: #E07A6B;
+    --closed-bg: rgba(224,122,107,0.14);
+    --active: #6FCB9F;
+    --active-bg: rgba(111,203,159,0.12);
+    --radius: 10px;
+    --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+    --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, monospace;
+  }
+
+  *{ box-sizing: border-box; }
+  html,body{ height:100%; }
+  body{
+    margin:0;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.025) 1px, transparent 1px) 0 0/100% 28px,
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px) 0 0/28px 100%,
+      var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  a{ color: inherit; }
+
+  .wrap{
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  header.top{
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: linear-gradient(180deg, var(--bg-deep) 82%, rgba(14,42,67,0.85));
+    border-bottom: 1px solid var(--line-soft);
+    padding-top: max(18px, env(safe-area-inset-top));
+    padding-bottom: 14px;
+    backdrop-filter: blur(6px);
+  }
+
+  .title-row{
+    display:flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  h1{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 21px;
+    letter-spacing: -0.01em;
+    margin: 0;
+    line-height: 1.15;
+  }
+  h1 .dim{ color: var(--ink-dim); font-weight: 500; }
+
+  .subtitle{
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    margin-top: 3px;
+    font-family: var(--font-mono);
+  }
+
+  .count-pill{
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--cyan);
+    border: 1px solid var(--line);
+    padding: 4px 9px;
+    border-radius: 100px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .search-row{
+    display:flex;
+    gap: 8px;
+  }
+
+  .search-box{
+    flex: 1;
+    position: relative;
+    display:flex;
+    align-items:center;
+  }
+  .search-box svg{
+    position:absolute;
+    left: 12px;
+    width: 15px; height:15px;
+    color: var(--ink-faint);
+    pointer-events:none;
+  }
+  input[type="search"]{
+    width:100%;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    border-radius: var(--radius);
+    padding: 10px 12px 10px 34px;
+    font-size: 14.5px;
+    font-family: var(--font-body);
+    outline: none;
+    transition: border-color .15s ease;
+  }
+  input[type="search"]::placeholder{ color: var(--ink-faint); }
+  input[type="search"]:focus{ border-color: var(--cyan); }
+  input[type="search"]::-webkit-search-cancel-button{ filter: invert(1) opacity(0.5); }
+
+  .filters{
+    display:flex;
+    gap: 6px;
+    margin-top: 10px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .filters::-webkit-scrollbar{ display:none; }
+
+  .chip{
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    padding: 6px 12px;
+    border-radius: 100px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink-dim);
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all .15s ease;
+  }
+  .chip:active{ transform: scale(0.97); }
+  .chip.active{
+    background: var(--amber);
+    border-color: var(--amber);
+    color: var(--amber-ink);
+    font-weight: 600;
+  }
+  .chip .n{ opacity: 0.65; margin-left: 3px; }
+  .chip.active .n{ opacity: 0.55; }
+
+  main{ margin-top: 14px; }
+
+  .group-label{
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--ink-faint);
+    padding: 14px 2px 8px;
+  }
+  .group-label:first-child{ padding-top: 4px; }
+
+  ul.rows{ list-style:none; margin:0; padding:0; }
+
+  li.row{
+    background: var(--panel);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius);
+    margin-bottom: 8px;
+    padding: 12px 12px 12px 14px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4px 10px;
+    align-items: start;
+    position: relative;
+  }
+
+  .row-type{
+    position:absolute;
+    left: 0; top: 14px; bottom: 14px;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+  }
+  .row-type.msag{ background: var(--cyan); }
+  .row-type.te{ background: var(--amber); }
+
+  .ref-line{
+    display:flex;
+    align-items:center;
+    gap: 8px;
+    grid-column: 1;
+  }
+  .ref-num{
+    font-family: var(--font-mono);
+    font-size: 14.5px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: 0.01em;
+    word-break: break-all;
+  }
+
+  .copy-btn{
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    color: var(--ink-dim);
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+    transition: background .12s ease, color .12s ease, border-color .12s ease, transform .1s ease;
+  }
+  .copy-btn svg{ width:16px; height:16px; }
+  .copy-btn:active{ transform: scale(0.92); }
+  .copy-btn.copied{
+    background: var(--active-bg);
+    border-color: var(--active);
+    color: var(--active);
+  }
+
+  .exch-name{
+    grid-column: 1;
+    font-size: 14px;
+    color: var(--ink-dim);
+    line-height: 1.4;
+  }
+
+  .meta-line{
+    grid-column: 1;
+    display:flex;
+    align-items:center;
+    gap: 8px;
+    margin-top: 2px;
+  }
+
+  .type-tag{
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .type-tag.msag{ color: var(--cyan); background: rgba(111,209,224,0.12); }
+  .type-tag.te{ color: var(--amber); background: rgba(255,180,84,0.12); }
+
+  .date-tag{
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+  }
+
+  .status-tag{
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--closed);
+    background: var(--closed-bg);
+  }
+
+  .empty-state{
+    text-align:center;
+    padding: 60px 20px 20px;
+    color: var(--ink-faint);
+  }
+  .empty-state svg{ width: 34px; height:34px; margin-bottom: 10px; opacity: 0.5; }
+  .empty-state p{ font-size: 13.5px; margin: 4px 0; }
+  .empty-state .q{ font-family: var(--font-mono); color: var(--cyan); }
+
+  .install-banner{
+    display:none;
+    max-width: 720px;
+    margin: 0 auto 12px;
+    padding: 0 16px;
+  }
+  .install-banner.show{ display:block; }
+  .install-inner{
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 11px 12px;
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .install-inner p{ margin:0; font-size: 12.5px; color: var(--ink-dim); flex:1; }
+  .install-inner button{
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--amber);
+    color: var(--amber-ink);
+    border: none;
+    padding: 7px 12px;
+    border-radius: 7px;
+    cursor: pointer;
+    flex-shrink:0;
+  }
+  .install-inner .dismiss{
+    background: transparent;
+    color: var(--ink-faint);
+    font-size: 18px;
+    padding: 0 4px;
+  }
+
+  footer{
+    max-width: 720px;
+    margin: 20px auto 0;
+    padding: 14px 16px 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+    border-top: 1px solid var(--line-soft);
+    text-align: center;
+  }
+
+  @media (min-width: 640px){
+    li.row{ padding: 13px 14px 13px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="title-row">
+      <div>
+        <h1>Exchange <span class="dim">Directory</span></h1>
+        <div class="subtitle">MSAG &amp; T-E sites · Bahawalnagar district</div>
+      </div>
+      <div class="count-pill" id="countPill">66 sites</div>
+    </div>
+
+    <div class="search-row">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="search" id="searchInput" placeholder="Search by name, reference or chak…" autocomplete="off">
+      </div>
+    </div>
+
+    <div class="filters" id="filters">
+      <button class="chip active" data-filter="all">All <span class="n"></span></button>
+      <button class="chip" data-filter="msag">MSAG <span class="n"></span></button>
+      <button class="chip" data-filter="te">T-E <span class="n"></span></button>
+      <button class="chip" data-filter="closed">Closed <span class="n"></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="install-banner" id="installBanner">
+  <div class="wrap">
+    <div class="install-inner">
+      <p>Install this directory for one-tap offline access in the field.</p>
+      <button id="installBtn">Install</button>
+      <button class="dismiss" id="dismissInstall" aria-label="Dismiss">×</button>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+  <ul class="rows" id="rowsList"></ul>
+  <div class="empty-state" id="emptyState" style="display:none">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+    <p>No matches for <span class="q" id="emptyQuery"></span></p>
+    <p>Try a chowk, chak number or town name.</p>
+  </div>
+</main>
+
+<footer>PTCL · MTR Region — Bahawalpur / Bahawalnagar &nbsp;·&nbsp; works offline once installed</footer>
+
+<script>
+const DATA = [
+  ["02154520069507","MSAG BWP Chowk, Hasilpur","14"],
+  ["02158110106701","MSAG Minchinabad Road, Bahawalnagar","14"],
+  ["02158310844604","MSAG Satellite Town, Chishtian","14"],
+  ["03154510218621","MSAG Opposite Khilji Drinks Corner, Hasilpur","15"],
+  ["03158110241404","MSAG Goshala Chowk, Bahawalnagar","15"],
+  ["03158110295101","MSAG Police Lines, Bahawalnagar","15"],
+  ["05154520307701","MSAG Vehari Road, Hasilpur","17"],
+  ["06158110602478","MSAG Ramzania Masjid, Bahawalnagar","18"],
+  ["08158110739807","MSAG Bahawali Chowk","20"],
+  ["08158343362701","MSAG Ghalla Mandi, Dharawala","20"],
+  ["09158343233301","MSAG Thana Mor, Dharawala","21"],
+  ["11154520659950","MSAG Zia Shaheed, Hasilpur","24"],
+  ["11158110928937","MSAG New City, Bahawalnagar","24"],
+  ["11158110966917","MSAG Mubarak Gate, Bahawalnagar","24"],
+  ["14158210039301","MSAG Housing Colony, Haroonabad","26"],
+  ["16158120118902","MSAG DHQ Hospital, Bahawalnagar","28"],
+  ["16158120120307","MSAG Officers Colony, Bahawalnagar","28"],
+  ["16158240005603","MSAG Committee Chowk, Fort Abbas","28"],
+  ["16158310287202","MSAG Baldia Chowk, Chishtian","29"],
+  ["17158230163603","MSAG Highway Road, Faqirwali","29"],
+  ["17158310303503","MSAG College Road, Chishtian","29"],
+  ["18158120196804","MSAG Railway Chowk, Bahawalnagar","31"],
+  ["18158130097701","MSAG Model Town, Bahawalnagar","31"],
+  ["18158320337501","MSAG Gulshan-e-Iqbal Chowk, Qazi Wala Road, Chishtian","31"],
+  ["19158311722700","MSAG 13/G, Gulshan Batool","31"],
+  ["20158210851611","MSAG Chowk, Chak 73/4R, Haroonabad","1"],
+  ["20158310037399","MSAG Jamia Mehmoodia, Darbar Road, Chishtian","1"],
+  ["27158111079600","T-E Bahawalnagar Exchange","3"],
+  ["27158210389000","T-E Haroonabad Exchange","3"],
+  ["27158211349300","T-E Donga Bonga","3"],
+  ["27158220821700","T-E Chak 69/4-R","3"],
+  ["27158230279000","T-E Faqirwali","3"],
+  ["27158234194402","T-E Chak No. 109/6-R","3"],
+  ["27158240003500","T-E Fort Abbas","3"],
+  ["27158310022600","T-E Chishtian","3"],
+  ["27158343216000","T-E Dharawala","3"],
+  ["28154510067700","T-E Hasilpur 1","11"],
+  ["28154510067900","T-E Hasilpur 2","11"],
+  ["28154511976901","T-E Shahpur, Hasilpur","11","closed"],
+  ["28154520033401","T-E T/Exchange Chak 88-F","11"],
+  ["28154520035500","T-E Chak No. 58/F","11"],
+  ["28154540898400","T-E Qaimpur","11"],
+  ["28158131563702","T-E Chak Bala Arain, Bahawalnagar","11","closed"],
+  ["28158141119401","T-E Meclod Ganj","11"],
+  ["28158150447400","T-E Mandi Sadiq Ganj","11"],
+  ["28158160927901","T-E Madrassa","11"],
+  ["28158170511900","T-E Macleod Ganj","11"],
+  ["28158210399901","T-E Pacci Mandi, Haroonabad","11"],
+  ["28158221571600","T-E Adda Pul Murad","11","closed"],
+  ["28158221575100","T-E Mianwala Bangla","11"],
+  ["28158221582500","T-E Chak 23-24/3R, Haroonabad","11","closed"],
+  ["28158231399900","T-E Bangla Yatimwala","11"],
+  ["28158240531702","T-E Chak 296/H-R","11"],
+  ["28158240725801","T-E Shahbazwala","11"],
+  ["28158240929300","T-E Khichiwala","11"],
+  ["28158241341002","T-E Chak 214 Chowk","11","closed"],
+  ["28158251567900","T-E Maroot","11"],
+  ["28158311366400","T-E Mohar Sharif, Chishtian","11","closed"],
+  ["28158321216900","T-E Bakhshan Khan","11"],
+  ["28158321219700","T-E Chak 28, Gagyani","11"],
+  ["28158321223500","T-E Shehar Fareed, Chishtian","11","closed"],
+  ["28158342634902","T-E Chak 132/Murad, Dahranwala","11"],
+  ["28158343015500","T-E Shaheed Chowk","11"],
+  ["28158361829601","T-E Chak 95-F","11"],
+  ["28158363726601","T-E Chunnawala","11"],
+  ["28158363900501","T-E Chak No. 165-M","11","closed"]
+].map(([ref, name, day, status]) => ({
+  ref,
+  name,
+  day,
+  type: name.startsWith("MSAG") ? "msag" : "te",
+  closed: status === "closed"
+}));
+
+const rowsList = document.getElementById('rowsList');
+const emptyState = document.getElementById('emptyState');
+const emptyQuery = document.getElementById('emptyQuery');
+const searchInput = document.getElementById('searchInput');
+const countPill = document.getElementById('countPill');
+const filters = document.getElementById('filters');
+
+let activeFilter = 'all';
+let query = '';
+
+const copyIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
+const checkIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`;
+
+function updateCounts(){
+  const counts = { all: DATA.length, msag: 0, te: 0, closed: 0 };
+  DATA.forEach(d => {
+    counts[d.type]++;
+    if (d.closed) counts.closed++;
+  });
+  filters.querySelectorAll('.chip').forEach(chip => {
+    const key = chip.dataset.filter;
+    chip.querySelector('.n').textContent = counts[key];
+  });
+}
+
+function matches(item, q){
+  if (!q) return true;
+  return item.ref.includes(q) || item.name.toLowerCase().includes(q);
+}
+
+function render(){
+  const q = query.trim().toLowerCase();
+  let filtered = DATA.filter(item => {
+    if (activeFilter === 'msag' && item.type !== 'msag') return false;
+    if (activeFilter === 'te' && item.type !== 'te') return false;
+    if (activeFilter === 'closed' && !item.closed) return false;
+    return matches(item, q);
+  });
+
+  countPill.textContent = `${filtered.length} of ${DATA.length}`;
+
+  if (filtered.length === 0){
+    rowsList.style.display = 'none';
+    emptyState.style.display = 'block';
+    emptyQuery.textContent = query ? `"${query}"` : 'this filter';
+    return;
+  }
+  rowsList.style.display = 'block';
+  emptyState.style.display = 'none';
+
+  rowsList.innerHTML = filtered.map((item, i) => `
+    <li class="row" data-ref="${item.ref}">
+      <span class="row-type ${item.type}"></span>
+      <div class="ref-line">
+        <span class="ref-num">${item.ref}</span>
+      </div>
+      <div class="exch-name">${item.name}</div>
+      <div class="meta-line">
+        <span class="type-tag ${item.type}">${item.type === 'msag' ? 'MSAG' : 'T-E'}</span>
+        <span class="date-tag">Issue day ${item.day}</span>
+        ${item.closed ? '<span class="status-tag">Closed</span>' : ''}
+      </div>
+      <button class="copy-btn" aria-label="Copy reference number" data-ref="${item.ref}">${copyIcon}</button>
+    </li>
+  `).join('');
+}
+
+rowsList.addEventListener('click', async (e) => {
+  const btn = e.target.closest('.copy-btn');
+  if (!btn) return;
+  const ref = btn.dataset.ref;
+  try{
+    await navigator.clipboard.writeText(ref);
+  }catch(err){
+    const ta = document.createElement('textarea');
+    ta.value = ref;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  }
+  btn.classList.add('copied');
+  btn.innerHTML = checkIcon;
+  if (navigator.vibrate) navigator.vibrate(12);
+  setTimeout(() => {
+    btn.classList.remove('copied');
+    btn.innerHTML = copyIcon;
+  }, 1300);
+});
+
+filters.addEventListener('click', (e) => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  filters.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  activeFilter = chip.dataset.filter;
+  render();
+});
+
+searchInput.addEventListener('input', (e) => {
+  query = e.target.value;
+  render();
+});
+
+updateCounts();
+render();
+
+// --- PWA install prompt ---
+let deferredPrompt;
+const installBanner = document.getElementById('installBanner');
+const installBtn = document.getElementById('installBtn');
+const dismissInstall = document.getElementById('dismissInstall');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  if (!localStorage.getItem('installDismissed')){
+    installBanner.classList.add('show');
+  }
+});
+
+installBtn?.addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  installBanner.classList.remove('show');
+});
+
+dismissInstall?.addEventListener('click', () => {
+  installBanner.classList.remove('show');
+  localStorage.setItem('installDismissed', '1');
+});
+
+// --- Service worker registration ---
+if ('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
